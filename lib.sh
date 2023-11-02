@@ -97,7 +97,7 @@ VAGRANT_DIR="$GITHUB_REPO/vagrant"
 NOT_SUPPORTED_FOLDER="$GITHUB_REPO/not-supported"
 GEOBLOCKDAT="$GITHUB_REPO/geoblockdat"
 NCREPO="https://download.nextcloud.com/server/releases"
-ISSUES="https://github.com/nextcloud/vm/issues"
+ISSUES="https://github.com/Altoyda/Test_Ubuntu_VM/issues"
 # User information
 GUIUSER=ncadmin
 GUIPASS=nextcloud
@@ -727,7 +727,7 @@ then
     if ! nslookup github.com
     then
         msg_box "Network is NOT OK. You must have a working network connection to run this script.
-If you think that this is a bug, please report it to https://github.com/nextcloud/vm/issues."
+If you think that this is a bug, please report it to https://github.com/Altoyda/Test_Ubuntu_VM/issues."
         return 1
     fi
 fi

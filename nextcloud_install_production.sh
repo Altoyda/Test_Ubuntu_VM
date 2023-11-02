@@ -41,8 +41,8 @@ debug_mode
 root_check
 
 # Test RAM size (2GB min) + CPUs (min 1)
-ram_check 2 Nextcloud
-cpu_check 1 Nextcloud
+ram_check 2 Ubuntu
+cpu_check 1 Ubuntu
 
 # Check if dpkg or apt is running
 is_process_running apt
@@ -168,12 +168,12 @@ rm -f "$SCRIPTS"/adduser.sh
 check_universe
 check_multiverse
 
-# Check if key is available
-if ! site_200 "$NCREPO"
-then
-    msg_box "Nextcloud repo is not available, exiting..."
-    exit 1
-fi
+# # Check if key is available
+# if ! site_200 "$NCREPO"
+# then
+#     msg_box "Nextcloud repo is not available, exiting..."
+#     exit 1
+# fi
 
 # Test Home/SME function
 if home_sme_server
@@ -184,23 +184,23 @@ else
     sleep 3
 fi
 
-# Check if it's a clean server
-stop_if_installed postgresql
-stop_if_installed apache2
-stop_if_installed nginx
-stop_if_installed php
-stop_if_installed php-fpm
-stop_if_installed php-common
-stop_if_installed php"$PHPVER"-fpm
-stop_if_installed php7.0-fpm
-stop_if_installed php7.1-fpm
-stop_if_installed php7.2-fpm
-stop_if_installed php7.3-fpm
-stop_if_installed php8.0-fpm
-stop_if_installed php8.1-fpm
-stop_if_installed php8.2-fpm
-stop_if_installed mysql-common
-stop_if_installed mariadb-server
+# # Check if it's a clean server
+# stop_if_installed postgresql
+# stop_if_installed apache2
+# stop_if_installed nginx
+# stop_if_installed php
+# stop_if_installed php-fpm
+# stop_if_installed php-common
+# stop_if_installed php"$PHPVER"-fpm
+# stop_if_installed php7.0-fpm
+# stop_if_installed php7.1-fpm
+# stop_if_installed php7.2-fpm
+# stop_if_installed php7.3-fpm
+# stop_if_installed php8.0-fpm
+# stop_if_installed php8.1-fpm
+# stop_if_installed php8.2-fpm
+# stop_if_installed mysql-common
+# stop_if_installed mariadb-server
 
 # We don't want automatic updates since they might fail (we use our own script)
 if is_this_installed unattended-upgrades
@@ -210,17 +210,17 @@ then
     rm -rf /var/log/unattended-upgrades
 fi
 
-# Create $SCRIPTS dir
-if [ ! -d "$SCRIPTS" ]
-then
-    mkdir -p "$SCRIPTS"
-fi
+# # Create $SCRIPTS dir
+# if [ ! -d "$SCRIPTS" ]
+# then
+#     mkdir -p "$SCRIPTS"
+# fi
 
-# Create $VMLOGS dir
-if [ ! -d "$VMLOGS" ]
-then
-    mkdir -p "$VMLOGS"
-fi
+# # Create $VMLOGS dir
+# if [ ! -d "$VMLOGS" ]
+# then
+#     mkdir -p "$VMLOGS"
+# fi
 
 # Install needed network
 install_if_not netplan.io
@@ -348,114 +348,114 @@ $MENU_GUIDE" "$WT_HEIGHT" "$WT_WIDTH" 4 \
     fi
 done
 
-# Install PostgreSQL
-apt-get update -q4 & spinner_loading
-install_if_not postgresql
+# # Install PostgreSQL
+# apt-get update -q4 & spinner_loading
+# install_if_not postgresql
 
-# Create DB
-cd /tmp
-sudo -u postgres psql <<END
-CREATE USER $PGDB_USER WITH PASSWORD '$PGDB_PASS';
-CREATE DATABASE nextcloud_db WITH OWNER $PGDB_USER TEMPLATE template0 ENCODING 'UTF8';
-END
-print_text_in_color "$ICyan" "PostgreSQL password: $PGDB_PASS"
-systemctl restart postgresql.service
+# # Create DB
+# cd /tmp
+# sudo -u postgres psql <<END
+# CREATE USER $PGDB_USER WITH PASSWORD '$PGDB_PASS';
+# CREATE DATABASE nextcloud_db WITH OWNER $PGDB_USER TEMPLATE template0 ENCODING 'UTF8';
+# END
+# print_text_in_color "$ICyan" "PostgreSQL password: $PGDB_PASS"
+# systemctl restart postgresql.service
 
-# Install Apache
-check_command install_if_not apache2
-a2enmod rewrite \
-        headers \
-        proxy \
-        proxy_fcgi \
-        setenvif \
-        env \
-        mime \
-        dir \
-        authz_core \
-        alias \
-        mpm_event \
-        ssl
+# # Install Apache
+# check_command install_if_not apache2
+# a2enmod rewrite \
+#         headers \
+#         proxy \
+#         proxy_fcgi \
+#         setenvif \
+#         env \
+#         mime \
+#         dir \
+#         authz_core \
+#         alias \
+#         mpm_event \
+#         ssl
         
-# We don't use Apache PHP (just to be sure)
-a2dismod mpm_prefork
+# # We don't use Apache PHP (just to be sure)
+# a2dismod mpm_prefork
 
-# Disable server tokens in Apache
-if ! grep -q 'ServerSignature' /etc/apache2/apache2.conf
-then
-{
-echo "# Turn off ServerTokens for both Apache and PHP"
-echo "ServerSignature Off"
-echo "ServerTokens Prod"
-} >> /etc/apache2/apache2.conf
+# # Disable server tokens in Apache
+# if ! grep -q 'ServerSignature' /etc/apache2/apache2.conf
+# then
+# {
+# echo "# Turn off ServerTokens for both Apache and PHP"
+# echo "ServerSignature Off"
+# echo "ServerTokens Prod"
+# } >> /etc/apache2/apache2.conf
 
-    check_command systemctl restart apache2.service
-fi
+#     check_command systemctl restart apache2.service
+# fi
 
-# Install PHP "$PHPVER"
-install_if_not php"$PHPVER"-fpm
-install_if_not php"$PHPVER"-intl
-install_if_not php"$PHPVER"-ldap
-install_if_not php"$PHPVER"-imap
-install_if_not php"$PHPVER"-gd
-install_if_not php"$PHPVER"-pgsql
-install_if_not php"$PHPVER"-curl
-install_if_not php"$PHPVER"-xml
-install_if_not php"$PHPVER"-zip
-install_if_not php"$PHPVER"-mbstring
-install_if_not php"$PHPVER"-soap
-install_if_not php"$PHPVER"-gmp
-install_if_not php"$PHPVER"-bz2
-install_if_not php"$PHPVER"-bcmath
-install_if_not php-pear
+# # Install PHP "$PHPVER"
+# install_if_not php"$PHPVER"-fpm
+# install_if_not php"$PHPVER"-intl
+# install_if_not php"$PHPVER"-ldap
+# install_if_not php"$PHPVER"-imap
+# install_if_not php"$PHPVER"-gd
+# install_if_not php"$PHPVER"-pgsql
+# install_if_not php"$PHPVER"-curl
+# install_if_not php"$PHPVER"-xml
+# install_if_not php"$PHPVER"-zip
+# install_if_not php"$PHPVER"-mbstring
+# install_if_not php"$PHPVER"-soap
+# install_if_not php"$PHPVER"-gmp
+# install_if_not php"$PHPVER"-bz2
+# install_if_not php"$PHPVER"-bcmath
+# install_if_not php-pear
 
-# Enable php-fpm
-a2enconf php"$PHPVER"-fpm
+# # Enable php-fpm
+# a2enconf php"$PHPVER"-fpm
 
-# Enable HTTP/2 server wide
-print_text_in_color "$ICyan" "Enabling HTTP/2 server wide..."
-cat << HTTP2_ENABLE > "$HTTP2_CONF"
-<IfModule http2_module>
-    Protocols h2 http/1.1
-</IfModule>
-HTTP2_ENABLE
-print_text_in_color "$IGreen" "$HTTP2_CONF was successfully created"
-a2enmod http2
-restart_webserver
+# # Enable HTTP/2 server wide
+# print_text_in_color "$ICyan" "Enabling HTTP/2 server wide..."
+# cat << HTTP2_ENABLE > "$HTTP2_CONF"
+# <IfModule http2_module>
+#     Protocols h2 http/1.1
+# </IfModule>
+# HTTP2_ENABLE
+# print_text_in_color "$IGreen" "$HTTP2_CONF was successfully created"
+# a2enmod http2
+# restart_webserver
 
-# Set up a php-fpm pool with a unixsocket
-cat << POOL_CONF > "$PHP_POOL_DIR"/nextcloud.conf
-[Nextcloud]
-user = www-data
-group = www-data
-listen = /run/php/php"$PHPVER"-fpm.nextcloud.sock
-listen.owner = www-data
-listen.group = www-data
-pm = dynamic
-; max_children is set dynamically with calculate_php_fpm()
-pm.max_children = 8
-pm.start_servers = 3
-pm.min_spare_servers = 2
-pm.max_spare_servers = 3
-env[HOSTNAME] = $(hostname -f)
-env[PATH] = /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin
-env[TMP] = /tmp
-env[TMPDIR] = /tmp
-env[TEMP] = /tmp
-security.limit_extensions = .php
-php_admin_value [cgi.fix_pathinfo] = 1
+# # Set up a php-fpm pool with a unixsocket
+# cat << POOL_CONF > "$PHP_POOL_DIR"/nextcloud.conf
+# [Nextcloud]
+# user = www-data
+# group = www-data
+# listen = /run/php/php"$PHPVER"-fpm.nextcloud.sock
+# listen.owner = www-data
+# listen.group = www-data
+# pm = dynamic
+# ; max_children is set dynamically with calculate_php_fpm()
+# pm.max_children = 8
+# pm.start_servers = 3
+# pm.min_spare_servers = 2
+# pm.max_spare_servers = 3
+# env[HOSTNAME] = $(hostname -f)
+# env[PATH] = /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin
+# env[TMP] = /tmp
+# env[TMPDIR] = /tmp
+# env[TEMP] = /tmp
+# security.limit_extensions = .php
+# php_admin_value [cgi.fix_pathinfo] = 1
 
-; Optional
-; pm.max_requests = 2000
-POOL_CONF
+# ; Optional
+# ; pm.max_requests = 2000
+# POOL_CONF
 
-# Disable the idling example pool.
-mv "$PHP_POOL_DIR"/www.conf "$PHP_POOL_DIR"/www.conf.backup
+# # Disable the idling example pool.
+# mv "$PHP_POOL_DIR"/www.conf "$PHP_POOL_DIR"/www.conf.backup
 
-# Enable the new php-fpm config
-restart_webserver
+# # Enable the new php-fpm config
+# restart_webserver
 
-# Calculate the values of PHP-FPM based on the amount of RAM available (it's done in the startup script as well)
-calculate_php_fpm
+# # Calculate the values of PHP-FPM based on the amount of RAM available (it's done in the startup script as well)
+# calculate_php_fpm
 
 # Install VM-tools
 if [ "$SYSVENDOR" == "VMware, Inc." ];
@@ -468,514 +468,514 @@ then
     systemctl start qemu-guest-agent
 fi
 
-# Get not-latest Nextcloud version
-if [ -n "$NOT_LATEST" ]
-then
-    while [ -z "$NCVERSION" ]
-    do
-        print_text_in_color "$ICyan" "Fetching the not-latest Nextcloud version..."
-        NCVERSION=$(curl -s -m 900 "$NCREPO"/ | sed --silent 's/.*href="nextcloud-\([^"]\+\).zip.asc".*/\1/p' \
-| sort --version-sort | grep -v "\.0$\|\.1$\|\.2$" | tail -1)
-        STABLEVERSION="nextcloud-$NCVERSION"
-        print_text_in_color "$IGreen" "$NCVERSION"
-    done
-fi
+# # Get not-latest Nextcloud version
+# if [ -n "$NOT_LATEST" ]
+# then
+#     while [ -z "$NCVERSION" ]
+#     do
+#         print_text_in_color "$ICyan" "Fetching the not-latest Nextcloud version..."
+#         NCVERSION=$(curl -s -m 900 "$NCREPO"/ | sed --silent 's/.*href="nextcloud-\([^"]\+\).zip.asc".*/\1/p' \
+# | sort --version-sort | grep -v "\.0$\|\.1$\|\.2$" | tail -1)
+#         STABLEVERSION="nextcloud-$NCVERSION"
+#         print_text_in_color "$IGreen" "$NCVERSION"
+#     done
+# fi
 
-# Download and validate Nextcloud package
-check_command download_verify_nextcloud_stable
+# # Download and validate Nextcloud package
+# check_command download_verify_nextcloud_stable
 
-if [ ! -f "$HTML/$STABLEVERSION.tar.bz2" ]
-then
-    msg_box "Aborting,something went wrong with the download of $STABLEVERSION.tar.bz2"
-    exit 1
-fi
+# if [ ! -f "$HTML/$STABLEVERSION.tar.bz2" ]
+# then
+#     msg_box "Aborting,something went wrong with the download of $STABLEVERSION.tar.bz2"
+#     exit 1
+# fi
 
-# Extract package
-tar -xjf "$HTML/$STABLEVERSION.tar.bz2" -C "$HTML" & spinner_loading
-rm "$HTML/$STABLEVERSION.tar.bz2"
+# # Extract package
+# tar -xjf "$HTML/$STABLEVERSION.tar.bz2" -C "$HTML" & spinner_loading
+# rm "$HTML/$STABLEVERSION.tar.bz2"
 
-# Secure permissions
-download_script STATIC setup_secure_permissions_nextcloud
-bash "$SECURE" & spinner_loading
+# # Secure permissions
+# download_script STATIC setup_secure_permissions_nextcloud
+# bash "$SECURE" & spinner_loading
 
-# Ask to set a custom username
-if yesno_box_no "Nextcloud is about to be installed.\nDo you want to change the standard GUI user '$GUIUSER' to something else?"
-then
-    while :
-    do
-        GUIUSER=$(input_box_flow "Please type in the name of the Web Admin in Nextcloud.
-\nThe only allowed characters for the username are:
-'a-z', 'A-Z', '0-9', and '_.@-'")
-        if [[ "$GUIUSER" == *" "* ]]
-        then
-            msg_box "Please don't use spaces."
-        # - has to be escaped otherwise it won't work.
-        # Inspired by: https://unix.stackexchange.com/a/498731/433213
-        elif [ "${GUIUSER//[A-Za-z0-9_.\-@]}" ]
-        then
-            msg_box "Allowed characters for the username are:\na-z', 'A-Z', '0-9', and '_.@-'\n\nPlease try again."
-        else
-            break
-        fi
-    done
-    while :
-    do
-        GUIPASS=$(input_box_flow "Please type in the new password for the new Web Admin ($GUIUSER) in Nextcloud.")
-        if [[ "$GUIPASS" == *" "* ]]
-        then
-            msg_box "Please don't use spaces."
-        fi
-        if [ "${GUIPASS//[A-Za-z0-9_.\-@]}" ]
-        then
-            msg_box "Allowed characters for the password are:\na-z', 'A-Z', '0-9', and '_.@-'\n\nPlease try again."
-        else
-        msg_box "The new Web Admin in Nextcloud is now: $GUIUSER\nThe password is set to: $GUIPASS
-This is used when you login to Nextcloud itself, i.e. on the web."
-            break
-        fi
-    done
+# # Ask to set a custom username
+# if yesno_box_no "Nextcloud is about to be installed.\nDo you want to change the standard GUI user '$GUIUSER' to something else?"
+# then
+#     while :
+#     do
+#         GUIUSER=$(input_box_flow "Please type in the name of the Web Admin in Nextcloud.
+# \nThe only allowed characters for the username are:
+# 'a-z', 'A-Z', '0-9', and '_.@-'")
+#         if [[ "$GUIUSER" == *" "* ]]
+#         then
+#             msg_box "Please don't use spaces."
+#         # - has to be escaped otherwise it won't work.
+#         # Inspired by: https://unix.stackexchange.com/a/498731/433213
+#         elif [ "${GUIUSER//[A-Za-z0-9_.\-@]}" ]
+#         then
+#             msg_box "Allowed characters for the username are:\na-z', 'A-Z', '0-9', and '_.@-'\n\nPlease try again."
+#         else
+#             break
+#         fi
+#     done
+#     while :
+#     do
+#         GUIPASS=$(input_box_flow "Please type in the new password for the new Web Admin ($GUIUSER) in Nextcloud.")
+#         if [[ "$GUIPASS" == *" "* ]]
+#         then
+#             msg_box "Please don't use spaces."
+#         fi
+#         if [ "${GUIPASS//[A-Za-z0-9_.\-@]}" ]
+#         then
+#             msg_box "Allowed characters for the password are:\na-z', 'A-Z', '0-9', and '_.@-'\n\nPlease try again."
+#         else
+#         msg_box "The new Web Admin in Nextcloud is now: $GUIUSER\nThe password is set to: $GUIPASS
+# This is used when you login to Nextcloud itself, i.e. on the web."
+#             break
+#         fi
+#     done
 
-fi
+# fi
 
-# Install Nextcloud
-print_text_in_color "$ICyan" "Installing Nextcloud, it might take a while..."
-cd "$NCPATH"
-# Don't use nextcloud_occ here as it takes alooong time.
-# https://github.com/nextcloud/vm/issues/2542#issuecomment-1700406020
-check_command sudo -u www-data php "$NCPATH"/occ maintenance:install \
---data-dir="$NCDATA" \
---database=pgsql \
---database-name=nextcloud_db \
---database-user="$PGDB_USER" \
---database-pass="$PGDB_PASS" \
---admin-user="$GUIUSER" \
---admin-pass="$GUIPASS"
-print_text_in_color "$ICyan" "Nextcloud version:"
-nextcloud_occ status
-sleep 3
+# # Install Nextcloud
+# print_text_in_color "$ICyan" "Installing Nextcloud, it might take a while..."
+# cd "$NCPATH"
+# # Don't use nextcloud_occ here as it takes alooong time.
+# # https://github.com/nextcloud/vm/issues/2542#issuecomment-1700406020
+# check_command sudo -u www-data php "$NCPATH"/occ maintenance:install \
+# --data-dir="$NCDATA" \
+# --database=pgsql \
+# --database-name=nextcloud_db \
+# --database-user="$PGDB_USER" \
+# --database-pass="$PGDB_PASS" \
+# --admin-user="$GUIUSER" \
+# --admin-pass="$GUIPASS"
+# print_text_in_color "$ICyan" "Nextcloud version:"
+# nextcloud_occ status
+# sleep 3
 
-# Install PECL dependencies
-install_if_not php"$PHPVER"-dev
+# # Install PECL dependencies
+# install_if_not php"$PHPVER"-dev
 
-# Install Redis (distributed cache)
-run_script ADDONS redis-server-ubuntu
+# # Install Redis (distributed cache)
+# run_script ADDONS redis-server-ubuntu
 
-# Install smbclient
-# php"$PHPVER"-smbclient does not yet work in PHP 7.4
-install_if_not libsmbclient-dev
-yes no | pecl install smbclient
-if [ ! -f "$PHP_MODS_DIR"/smbclient.ini ]
-then
-    touch "$PHP_MODS_DIR"/smbclient.ini
-fi
-if ! grep -qFx extension=smbclient.so "$PHP_MODS_DIR"/smbclient.ini
-then
-    echo "# PECL smbclient" > "$PHP_MODS_DIR"/smbclient.ini
-    echo "extension=smbclient.so" >> "$PHP_MODS_DIR"/smbclient.ini
-    check_command phpenmod -v ALL smbclient
-fi
+# # Install smbclient
+# # php"$PHPVER"-smbclient does not yet work in PHP 7.4
+# install_if_not libsmbclient-dev
+# yes no | pecl install smbclient
+# if [ ! -f "$PHP_MODS_DIR"/smbclient.ini ]
+# then
+#     touch "$PHP_MODS_DIR"/smbclient.ini
+# fi
+# if ! grep -qFx extension=smbclient.so "$PHP_MODS_DIR"/smbclient.ini
+# then
+#     echo "# PECL smbclient" > "$PHP_MODS_DIR"/smbclient.ini
+#     echo "extension=smbclient.so" >> "$PHP_MODS_DIR"/smbclient.ini
+#     check_command phpenmod -v ALL smbclient
+# fi
 
-# Enable igbinary for PHP
-# https://github.com/igbinary/igbinary
-if is_this_installed "php$PHPVER"-dev
-then
-    if ! yes no | pecl install -Z igbinary
-    then
-        msg_box "igbinary PHP module installation failed"
-        exit
-    else
-        print_text_in_color "$IGreen" "igbinary PHP module installation OK!"
-    fi
-{
-echo "# igbinary for PHP"
-echo "session.serialize_handler=igbinary"
-echo "igbinary.compact_strings=On"
-} >> "$PHP_INI"
-    if [ ! -f "$PHP_MODS_DIR"/igbinary.ini ]
-    then
-        touch "$PHP_MODS_DIR"/igbinary.ini
-    fi
-    if ! grep -qFx extension=igbinary.so "$PHP_MODS_DIR"/igbinary.ini
-    then
-        echo "# PECL igbinary" > "$PHP_MODS_DIR"/igbinary.ini
-        echo "extension=igbinary.so" >> "$PHP_MODS_DIR"/igbinary.ini
-        check_command phpenmod -v ALL igbinary
-    fi
-restart_webserver
-fi
+# # Enable igbinary for PHP
+# # https://github.com/igbinary/igbinary
+# if is_this_installed "php$PHPVER"-dev
+# then
+#     if ! yes no | pecl install -Z igbinary
+#     then
+#         msg_box "igbinary PHP module installation failed"
+#         exit
+#     else
+#         print_text_in_color "$IGreen" "igbinary PHP module installation OK!"
+#     fi
+# {
+# echo "# igbinary for PHP"
+# echo "session.serialize_handler=igbinary"
+# echo "igbinary.compact_strings=On"
+# } >> "$PHP_INI"
+#     if [ ! -f "$PHP_MODS_DIR"/igbinary.ini ]
+#     then
+#         touch "$PHP_MODS_DIR"/igbinary.ini
+#     fi
+#     if ! grep -qFx extension=igbinary.so "$PHP_MODS_DIR"/igbinary.ini
+#     then
+#         echo "# PECL igbinary" > "$PHP_MODS_DIR"/igbinary.ini
+#         echo "extension=igbinary.so" >> "$PHP_MODS_DIR"/igbinary.ini
+#         check_command phpenmod -v ALL igbinary
+#     fi
+# restart_webserver
+# fi
 
-# Prepare cron.php to be run every 5 minutes
-crontab -u www-data -l | { cat; echo "*/5  *  *  *  * php -f $NCPATH/cron.php > /dev/null 2>&1"; } | crontab -u www-data -
+# # Prepare cron.php to be run every 5 minutes
+# crontab -u www-data -l | { cat; echo "*/5  *  *  *  * php -f $NCPATH/cron.php > /dev/null 2>&1"; } | crontab -u www-data -
 
-# Run the updatenotification on a schedule
-nextcloud_occ config:system:set upgrade.disable-web --type=bool --value=true
-nextcloud_occ config:app:set updatenotification notify_groups --value="[]"
-print_text_in_color "$ICyan" "Configuring update notifications specific for this server..."
-download_script STATIC updatenotification
-check_command chmod +x "$SCRIPTS"/updatenotification.sh
-crontab -u root -l | { cat; echo "59 $AUT_UPDATES_TIME * * * $SCRIPTS/updatenotification.sh > /dev/null 2>&1"; } | crontab -u root -
+# # Run the updatenotification on a schedule
+# nextcloud_occ config:system:set upgrade.disable-web --type=bool --value=true
+# nextcloud_occ config:app:set updatenotification notify_groups --value="[]"
+# print_text_in_color "$ICyan" "Configuring update notifications specific for this server..."
+# download_script STATIC updatenotification
+# check_command chmod +x "$SCRIPTS"/updatenotification.sh
+# crontab -u root -l | { cat; echo "59 $AUT_UPDATES_TIME * * * $SCRIPTS/updatenotification.sh > /dev/null 2>&1"; } | crontab -u root -
 
-# Change values in php.ini (increase max file size)
-# max_execution_time
-sed -i "s|max_execution_time =.*|max_execution_time = 3500|g" "$PHP_INI"
-# max_input_time
-sed -i "s|max_input_time =.*|max_input_time = 3600|g" "$PHP_INI"
-# memory_limit
-sed -i "s|memory_limit =.*|memory_limit = 512M|g" "$PHP_INI"
-# post_max
-sed -i "s|post_max_size =.*|post_max_size = 1100M|g" "$PHP_INI"
-# upload_max
-sed -i "s|upload_max_filesize =.*|upload_max_filesize = 1000M|g" "$PHP_INI"
+# # Change values in php.ini (increase max file size)
+# # max_execution_time
+# sed -i "s|max_execution_time =.*|max_execution_time = 3500|g" "$PHP_INI"
+# # max_input_time
+# sed -i "s|max_input_time =.*|max_input_time = 3600|g" "$PHP_INI"
+# # memory_limit
+# sed -i "s|memory_limit =.*|memory_limit = 512M|g" "$PHP_INI"
+# # post_max
+# sed -i "s|post_max_size =.*|post_max_size = 1100M|g" "$PHP_INI"
+# # upload_max
+# sed -i "s|upload_max_filesize =.*|upload_max_filesize = 1000M|g" "$PHP_INI"
 
-# Set logging
-nextcloud_occ config:system:set log_type --value=file
-nextcloud_occ config:system:set logfile --value="$VMLOGS/nextcloud.log"
-rm -f "$NCDATA/nextcloud.log"
-nextcloud_occ config:system:set loglevel --value=2
-install_and_enable_app admin_audit
-nextcloud_occ config:app:set admin_audit logfile --value="$VMLOGS/audit.log"
-nextcloud_occ config:system:set log.condition apps 0 --value admin_audit
+# # Set logging
+# nextcloud_occ config:system:set log_type --value=file
+# nextcloud_occ config:system:set logfile --value="$VMLOGS/nextcloud.log"
+# rm -f "$NCDATA/nextcloud.log"
+# nextcloud_occ config:system:set loglevel --value=2
+# install_and_enable_app admin_audit
+# nextcloud_occ config:app:set admin_audit logfile --value="$VMLOGS/audit.log"
+# nextcloud_occ config:system:set log.condition apps 0 --value admin_audit
 
-# Set SMTP mail
-nextcloud_occ config:system:set mail_smtpmode --value="smtp"
+# # Set SMTP mail
+# nextcloud_occ config:system:set mail_smtpmode --value="smtp"
 
-# Forget login/session after 30 minutes
-nextcloud_occ config:system:set remember_login_cookie_lifetime --value="1800"
+# # Forget login/session after 30 minutes
+# nextcloud_occ config:system:set remember_login_cookie_lifetime --value="1800"
 
-# Set logrotate (max 10 MB)
-nextcloud_occ config:system:set log_rotate_size --value="10485760"
+# # Set logrotate (max 10 MB)
+# nextcloud_occ config:system:set log_rotate_size --value="10485760"
 
-# Set trashbin retention obligation (save it in trashbin for 60 days or delete when space is needed)
-nextcloud_occ config:system:set trashbin_retention_obligation --value="auto, 60"
+# # Set trashbin retention obligation (save it in trashbin for 60 days or delete when space is needed)
+# nextcloud_occ config:system:set trashbin_retention_obligation --value="auto, 60"
 
-# Set versions retention obligation (save versions for 180 days or delete when space is needed)
-nextcloud_occ config:system:set versions_retention_obligation --value="auto, 180"
+# # Set versions retention obligation (save versions for 180 days or delete when space is needed)
+# nextcloud_occ config:system:set versions_retention_obligation --value="auto, 180"
 
-# Set activity retention obligation (save activity feed for 120 days, defaults to 365 days otherwise)
-nextcloud_occ config:system:set activity_expire_days --value="120"
+# # Set activity retention obligation (save activity feed for 120 days, defaults to 365 days otherwise)
+# nextcloud_occ config:system:set activity_expire_days --value="120"
 
-# Remove simple signup
-nextcloud_occ config:system:set simpleSignUpLink.shown --type=bool --value=false
+# # Remove simple signup
+# nextcloud_occ config:system:set simpleSignUpLink.shown --type=bool --value=false
 
-# Set chunk_size for files app to 100MB (defaults to 10MB)
-nextcloud_occ config:app:set files max_chunk_size --value="104857600"
+# # Set chunk_size for files app to 100MB (defaults to 10MB)
+# nextcloud_occ config:app:set files max_chunk_size --value="104857600"
 
-# Set product name
-if home_sme_server
-then
-    PRODUCTNAME="Nextcloud HanssonIT Server"
-else
-    PRODUCTNAME="Nextcloud HanssonIT VM"
-fi
-if is_app_installed theming
-then
-    if [ "$(nextcloud_occ config:app:get theming productName)" != "$PRODUCTNAME" ]
-    then
-        nextcloud_occ config:app:set theming productName --value "$PRODUCTNAME"
-    fi
-fi
+# # Set product name
+# if home_sme_server
+# then
+#     PRODUCTNAME="Nextcloud HanssonIT Server"
+# else
+#     PRODUCTNAME="Nextcloud HanssonIT VM"
+# fi
+# if is_app_installed theming
+# then
+#     if [ "$(nextcloud_occ config:app:get theming productName)" != "$PRODUCTNAME" ]
+#     then
+#         nextcloud_occ config:app:set theming productName --value "$PRODUCTNAME"
+#     fi
+# fi
 
-# Enable OPCache for PHP
-# https://docs.nextcloud.com/server/14/admin_manual/configuration_server/server_tuning.html#enable-php-opcache
-phpenmod opcache
-{
-echo "# OPcache settings for Nextcloud"
-echo "opcache.enable=1"
-echo "opcache.enable_cli=1"
-echo "opcache.interned_strings_buffer=$opcache_interned_strings_buffer_value"
-echo "opcache.max_accelerated_files=10000"
-echo "opcache.memory_consumption=256"
-echo "opcache.save_comments=1"
-echo "opcache.revalidate_freq=1"
-echo "opcache.validate_timestamps=1"
-} >> "$PHP_INI"
+# # Enable OPCache for PHP
+# # https://docs.nextcloud.com/server/14/admin_manual/configuration_server/server_tuning.html#enable-php-opcache
+# phpenmod opcache
+# {
+# echo "# OPcache settings for Nextcloud"
+# echo "opcache.enable=1"
+# echo "opcache.enable_cli=1"
+# echo "opcache.interned_strings_buffer=$opcache_interned_strings_buffer_value"
+# echo "opcache.max_accelerated_files=10000"
+# echo "opcache.memory_consumption=256"
+# echo "opcache.save_comments=1"
+# echo "opcache.revalidate_freq=1"
+# echo "opcache.validate_timestamps=1"
+# } >> "$PHP_INI"
 
-# PHP-FPM optimization
-# https://geekflare.com/php-fpm-optimization/
-sed -i "s|;emergency_restart_threshold.*|emergency_restart_threshold = 10|g" /etc/php/"$PHPVER"/fpm/php-fpm.conf
-sed -i "s|;emergency_restart_interval.*|emergency_restart_interval = 1m|g" /etc/php/"$PHPVER"/fpm/php-fpm.conf
-sed -i "s|;process_control_timeout.*|process_control_timeout = 10|g" /etc/php/"$PHPVER"/fpm/php-fpm.conf
+# # PHP-FPM optimization
+# # https://geekflare.com/php-fpm-optimization/
+# sed -i "s|;emergency_restart_threshold.*|emergency_restart_threshold = 10|g" /etc/php/"$PHPVER"/fpm/php-fpm.conf
+# sed -i "s|;emergency_restart_interval.*|emergency_restart_interval = 1m|g" /etc/php/"$PHPVER"/fpm/php-fpm.conf
+# sed -i "s|;process_control_timeout.*|process_control_timeout = 10|g" /etc/php/"$PHPVER"/fpm/php-fpm.conf
 
-# PostgreSQL values for PHP (https://docs.nextcloud.com/server/latest/admin_manual/configuration_database/linux_database_configuration.html#postgresql-database)
-{
-echo ""
-echo "[PostgresSQL]"
-echo "pgsql.allow_persistent = On"
-echo "pgsql.auto_reset_persistent = Off"
-echo "pgsql.max_persistent = -1"
-echo "pgsql.max_links = -1"
-echo "pgsql.ignore_notice = 0"
-echo "pgsql.log_notice = 0"
-} >> "$PHP_FPM_DIR"/conf.d/20-pdo_pgsql.ini
+# # PostgreSQL values for PHP (https://docs.nextcloud.com/server/latest/admin_manual/configuration_database/linux_database_configuration.html#postgresql-database)
+# {
+# echo ""
+# echo "[PostgresSQL]"
+# echo "pgsql.allow_persistent = On"
+# echo "pgsql.auto_reset_persistent = Off"
+# echo "pgsql.max_persistent = -1"
+# echo "pgsql.max_links = -1"
+# echo "pgsql.ignore_notice = 0"
+# echo "pgsql.log_notice = 0"
+# } >> "$PHP_FPM_DIR"/conf.d/20-pdo_pgsql.ini
 
-# Fix https://github.com/nextcloud/vm/issues/714
-print_text_in_color "$ICyan" "Optimizing Nextcloud..."
-yes | nextcloud_occ db:convert-filecache-bigint
-nextcloud_occ db:add-missing-indices
-while [ -z "$CURRENTVERSION" ]
-do
-    CURRENTVERSION=$(sudo -u www-data php "$NCPATH"/occ status | grep "versionstring" | awk '{print $3}')
-done
-if [ "${CURRENTVERSION%%.*}" -ge "19" ]
-then
-    nextcloud_occ db:add-missing-columns
-fi
-if [ "${CURRENTVERSION%%.*}" -ge "20" ]
-then
-    nextcloud_occ db:add-missing-primary-keys
-fi
+# # Fix https://github.com/nextcloud/vm/issues/714
+# print_text_in_color "$ICyan" "Optimizing Nextcloud..."
+# yes | nextcloud_occ db:convert-filecache-bigint
+# nextcloud_occ db:add-missing-indices
+# while [ -z "$CURRENTVERSION" ]
+# do
+#     CURRENTVERSION=$(sudo -u www-data php "$NCPATH"/occ status | grep "versionstring" | awk '{print $3}')
+# done
+# if [ "${CURRENTVERSION%%.*}" -ge "19" ]
+# then
+#     nextcloud_occ db:add-missing-columns
+# fi
+# if [ "${CURRENTVERSION%%.*}" -ge "20" ]
+# then
+#     nextcloud_occ db:add-missing-primary-keys
+# fi
 
 # Install Figlet
 install_if_not figlet
 
-# To be able to use snakeoil certs
-install_if_not ssl-cert
+# # To be able to use snakeoil certs
+# install_if_not ssl-cert
 
-# Generate $HTTP_CONF
-if [ ! -f "$SITES_AVAILABLE"/"$HTTP_CONF" ]
-then
-    touch "$SITES_AVAILABLE/$HTTP_CONF"
-    cat << HTTP_CREATE > "$SITES_AVAILABLE/$HTTP_CONF"
-<VirtualHost *:80>
-
-### YOUR SERVER ADDRESS ###
-#    ServerAdmin admin@example.com
-#    ServerName cloud.example.com
-
-### SETTINGS ###
-    <FilesMatch "\.php$">
-        SetHandler "proxy:unix:/run/php/php$PHPVER-fpm.nextcloud.sock|fcgi://localhost"
-    </FilesMatch>
-
-    # Logs
-    LogLevel warn
-    CustomLog \${APACHE_LOG_DIR}/access.log combined
-    ErrorLog \${APACHE_LOG_DIR}/error.log
-
-    # Document root folder
-    DocumentRoot $NCPATH
-
-    # The Nextcloud folder
-    <Directory $NCPATH>
-    Options Indexes FollowSymLinks
-    AllowOverride None
-    Require all granted
-    Satisfy Any
-    # This is to include all the Nextcloud rules due to that we use PHP-FPM and .htaccess aren't read
-    Include $NCPATH/.htaccess
-    </Directory>
-
-    # Deny access to your data directory
-    <Directory $NCDATA>
-    Require all denied
-    </Directory>
-
-    # Deny access to the Nextcloud config folder
-    <Directory $NCPATH/config/>
-    Require all denied
-    </Directory>
-
-    <IfModule mod_dav.c>
-    Dav off
-    </IfModule>
-
-    # The following lines prevent .htaccess and .htpasswd files from being viewed by Web clients.
-    <Files ".ht*">
-    Require all denied
-    </Files>
-
-    SetEnv HOME $NCPATH
-    SetEnv HTTP_HOME $NCPATH
-    
-    # Disable HTTP TRACE method.
-    TraceEnable off
-    # Disable HTTP TRACK method.
-    RewriteEngine On
-    RewriteCond %{REQUEST_METHOD} ^TRACK
-    RewriteRule .* - [R=405,L]
-
-    # Avoid "Sabre\DAV\Exception\BadRequest: expected filesize XXXX got XXXX"
-    <IfModule mod_reqtimeout.c>
-    RequestReadTimeout body=0
-    </IfModule>
-</VirtualHost>
-HTTP_CREATE
-    print_text_in_color "$IGreen" "$SITES_AVAILABLE/$HTTP_CONF was successfully created."
-fi
-
-# Fix zero file sizes
-# See https://github.com/nextcloud/server/issues/3056
-if version 22.04 "$DISTRO" 26.04.10
-then
-    SETENVPROXY="SetEnv proxy-sendcl 1"
-fi
-
-# Generate $TLS_CONF
-if [ ! -f "$SITES_AVAILABLE"/"$TLS_CONF" ]
-then
-    touch "$SITES_AVAILABLE/$TLS_CONF"
-    cat << TLS_CREATE > "$SITES_AVAILABLE/$TLS_CONF"
+# # Generate $HTTP_CONF
+# if [ ! -f "$SITES_AVAILABLE"/"$HTTP_CONF" ]
+# then
+#     touch "$SITES_AVAILABLE/$HTTP_CONF"
+#     cat << HTTP_CREATE > "$SITES_AVAILABLE/$HTTP_CONF"
 # <VirtualHost *:80>
+
+# ### YOUR SERVER ADDRESS ###
+# #    ServerAdmin admin@example.com
+# #    ServerName cloud.example.com
+
+# ### SETTINGS ###
+#     <FilesMatch "\.php$">
+#         SetHandler "proxy:unix:/run/php/php$PHPVER-fpm.nextcloud.sock|fcgi://localhost"
+#     </FilesMatch>
+
+#     # Logs
+#     LogLevel warn
+#     CustomLog \${APACHE_LOG_DIR}/access.log combined
+#     ErrorLog \${APACHE_LOG_DIR}/error.log
+
+#     # Document root folder
+#     DocumentRoot $NCPATH
+
+#     # The Nextcloud folder
+#     <Directory $NCPATH>
+#     Options Indexes FollowSymLinks
+#     AllowOverride None
+#     Require all granted
+#     Satisfy Any
+#     # This is to include all the Nextcloud rules due to that we use PHP-FPM and .htaccess aren't read
+#     Include $NCPATH/.htaccess
+#     </Directory>
+
+#     # Deny access to your data directory
+#     <Directory $NCDATA>
+#     Require all denied
+#     </Directory>
+
+#     # Deny access to the Nextcloud config folder
+#     <Directory $NCPATH/config/>
+#     Require all denied
+#     </Directory>
+
+#     <IfModule mod_dav.c>
+#     Dav off
+#     </IfModule>
+
+#     # The following lines prevent .htaccess and .htpasswd files from being viewed by Web clients.
+#     <Files ".ht*">
+#     Require all denied
+#     </Files>
+
+#     SetEnv HOME $NCPATH
+#     SetEnv HTTP_HOME $NCPATH
+    
+#     # Disable HTTP TRACE method.
+#     TraceEnable off
+#     # Disable HTTP TRACK method.
 #     RewriteEngine On
-#     RewriteRule ^(.*)$ https://%{HTTP_HOST}$1 [R=301,L]
+#     RewriteCond %{REQUEST_METHOD} ^TRACK
+#     RewriteRule .* - [R=405,L]
+
+#     # Avoid "Sabre\DAV\Exception\BadRequest: expected filesize XXXX got XXXX"
+#     <IfModule mod_reqtimeout.c>
+#     RequestReadTimeout body=0
+#     </IfModule>
 # </VirtualHost>
+# HTTP_CREATE
+#     print_text_in_color "$IGreen" "$SITES_AVAILABLE/$HTTP_CONF was successfully created."
+# fi
 
-<VirtualHost *:443>
-    Header add Strict-Transport-Security: "max-age=15552000;includeSubdomains"
+# # Fix zero file sizes
+# # See https://github.com/nextcloud/server/issues/3056
+# if version 22.04 "$DISTRO" 26.04.10
+# then
+#     SETENVPROXY="SetEnv proxy-sendcl 1"
+# fi
 
-### YOUR SERVER ADDRESS ###
-#    ServerAdmin admin@example.com
-#    ServerName cloud.example.com
+# # Generate $TLS_CONF
+# if [ ! -f "$SITES_AVAILABLE"/"$TLS_CONF" ]
+# then
+#     touch "$SITES_AVAILABLE/$TLS_CONF"
+#     cat << TLS_CREATE > "$SITES_AVAILABLE/$TLS_CONF"
+# # <VirtualHost *:80>
+# #     RewriteEngine On
+# #     RewriteRule ^(.*)$ https://%{HTTP_HOST}$1 [R=301,L]
+# # </VirtualHost>
 
-### SETTINGS ###
-    <FilesMatch "\.php$">
-        SetHandler "proxy:unix:/run/php/php$PHPVER-fpm.nextcloud.sock|fcgi://localhost"
-    </FilesMatch>
+# <VirtualHost *:443>
+#     Header add Strict-Transport-Security: "max-age=15552000;includeSubdomains"
 
-    # Intermediate configuration
-    SSLEngine               on
-    SSLCompression          off
-    SSLProtocol             -all +TLSv1.2 +TLSv1.3
-    SSLCipherSuite          ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384
-    SSLHonorCipherOrder     off
-    SSLSessionTickets       off
-    ServerSignature         off
+# ### YOUR SERVER ADDRESS ###
+# #    ServerAdmin admin@example.com
+# #    ServerName cloud.example.com
 
-    # Logs
-    LogLevel warn
-    CustomLog \${APACHE_LOG_DIR}/access.log combined
-    ErrorLog \${APACHE_LOG_DIR}/error.log
+# ### SETTINGS ###
+#     <FilesMatch "\.php$">
+#         SetHandler "proxy:unix:/run/php/php$PHPVER-fpm.nextcloud.sock|fcgi://localhost"
+#     </FilesMatch>
 
-    # Document root folder
-    DocumentRoot $NCPATH
+#     # Intermediate configuration
+#     SSLEngine               on
+#     SSLCompression          off
+#     SSLProtocol             -all +TLSv1.2 +TLSv1.3
+#     SSLCipherSuite          ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384
+#     SSLHonorCipherOrder     off
+#     SSLSessionTickets       off
+#     ServerSignature         off
 
-    # The Nextcloud folder
-    <Directory $NCPATH>
-    Options Indexes FollowSymLinks
-    AllowOverride None
-    Require all granted
-    Satisfy Any
-    # This is to include all the Nextcloud rules due to that we use PHP-FPM and .htaccess aren't read
-    Include $NCPATH/.htaccess
-    </Directory>
+#     # Logs
+#     LogLevel warn
+#     CustomLog \${APACHE_LOG_DIR}/access.log combined
+#     ErrorLog \${APACHE_LOG_DIR}/error.log
 
-    # Deny access to your data directory
-    <Directory $NCDATA>
-    Require all denied
-    </Directory>
+#     # Document root folder
+#     DocumentRoot $NCPATH
 
-    # Deny access to the Nextcloud config folder
-    <Directory $NCPATH/config/>
-    Require all denied
-    </Directory>
+#     # The Nextcloud folder
+#     <Directory $NCPATH>
+#     Options Indexes FollowSymLinks
+#     AllowOverride None
+#     Require all granted
+#     Satisfy Any
+#     # This is to include all the Nextcloud rules due to that we use PHP-FPM and .htaccess aren't read
+#     Include $NCPATH/.htaccess
+#     </Directory>
 
-    <IfModule mod_dav.c>
-    Dav off
-    </IfModule>
+#     # Deny access to your data directory
+#     <Directory $NCDATA>
+#     Require all denied
+#     </Directory>
 
-    # The following lines prevent .htaccess and .htpasswd files from being viewed by Web clients.
-    <Files ".ht*">
-    Require all denied
-    </Files>
+#     # Deny access to the Nextcloud config folder
+#     <Directory $NCPATH/config/>
+#     Require all denied
+#     </Directory>
 
-    SetEnv HOME $NCPATH
-    SetEnv HTTP_HOME $NCPATH
+#     <IfModule mod_dav.c>
+#     Dav off
+#     </IfModule>
+
+#     # The following lines prevent .htaccess and .htpasswd files from being viewed by Web clients.
+#     <Files ".ht*">
+#     Require all denied
+#     </Files>
+
+#     SetEnv HOME $NCPATH
+#     SetEnv HTTP_HOME $NCPATH
     
-    # Disable HTTP TRACE method.
-    TraceEnable off
-    # Disable HTTP TRACK method.
-    RewriteEngine On
-    RewriteCond %{REQUEST_METHOD} ^TRACK
-    RewriteRule .* - [R=405,L]
+#     # Disable HTTP TRACE method.
+#     TraceEnable off
+#     # Disable HTTP TRACK method.
+#     RewriteEngine On
+#     RewriteCond %{REQUEST_METHOD} ^TRACK
+#     RewriteRule .* - [R=405,L]
 
-    # Avoid "Sabre\DAV\Exception\BadRequest: expected filesize XXXX got XXXX"
-    <IfModule mod_reqtimeout.c>
-    RequestReadTimeout body=0
-    </IfModule>
+#     # Avoid "Sabre\DAV\Exception\BadRequest: expected filesize XXXX got XXXX"
+#     <IfModule mod_reqtimeout.c>
+#     RequestReadTimeout body=0
+#     </IfModule>
     
-    # Avoid zero byte files (only works in Ubuntu 22.04 -->>)
-    $SETENVPROXY
+#     # Avoid zero byte files (only works in Ubuntu 22.04 -->>)
+#     $SETENVPROXY
 
-### LOCATION OF CERT FILES ###
-    SSLCertificateFile /etc/ssl/certs/ssl-cert-snakeoil.pem
-    SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
-</VirtualHost>
-TLS_CREATE
-    print_text_in_color "$IGreen" "$SITES_AVAILABLE/$TLS_CONF was successfully created."
-fi
+# ### LOCATION OF CERT FILES ###
+#     SSLCertificateFile /etc/ssl/certs/ssl-cert-snakeoil.pem
+#     SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
+# </VirtualHost>
+# TLS_CREATE
+#     print_text_in_color "$IGreen" "$SITES_AVAILABLE/$TLS_CONF was successfully created."
+# fi
 
-# Enable new config
-a2ensite "$TLS_CONF"
-a2ensite "$HTTP_CONF"
-a2dissite default-ssl
-restart_webserver
+# # Enable new config
+# a2ensite "$TLS_CONF"
+# a2ensite "$HTTP_CONF"
+# a2dissite default-ssl
+# restart_webserver
 
-if [ -n "$PROVISIONING" ]
-then
-    choice="Calendar Contacts IssueTemplate PDFViewer Extract Text Mail Deck Group-Folders"
-else
-    choice=$(whiptail --title "$TITLE - Install apps or software" --checklist \
-"Automatically configure and install selected apps or software
-$CHECKLIST_GUIDE" "$WT_HEIGHT" "$WT_WIDTH" 4 \
-"Calendar" "" ON \
-"Contacts" "" ON \
-"PDFViewer" "" ON \
-"Extract" "" ON \
-"Text" "" ON \
-"Mail" "" ON \
-"Deck" "" ON \
-"Collectives" "" ON \
-"Suspicios Login detetion" "" ON \
-"IssueTemplate" "" OFF \
-"Group-Folders" "" OFF 3>&1 1>&2 2>&3)
-fi
+# if [ -n "$PROVISIONING" ]
+# then
+#     choice="Calendar Contacts IssueTemplate PDFViewer Extract Text Mail Deck Group-Folders"
+# else
+#     choice=$(whiptail --title "$TITLE - Install apps or software" --checklist \
+# "Automatically configure and install selected apps or software
+# $CHECKLIST_GUIDE" "$WT_HEIGHT" "$WT_WIDTH" 4 \
+# "Calendar" "" ON \
+# "Contacts" "" ON \
+# "PDFViewer" "" ON \
+# "Extract" "" ON \
+# "Text" "" ON \
+# "Mail" "" ON \
+# "Deck" "" ON \
+# "Collectives" "" ON \
+# "Suspicios Login detetion" "" ON \
+# "IssueTemplate" "" OFF \
+# "Group-Folders" "" OFF 3>&1 1>&2 2>&3)
+# fi
 
-case "$choice" in
-    *"Calendar"*)
-        install_and_enable_app calendar
-    ;;&
-    *"Contacts"*)
-        install_and_enable_app contacts
-    ;;&
-    *"IssueTemplate"*)
-        # install_and_enable_app issuetemplate
-        rm -rf "$NCPATH"apps/issuetemplate
-        nextcloud_occ app:install --force --keep-disabled issuetemplate
-        sed -i "s|20|${CURRENTVERSION%%.*}|g" "$NCPATH"/apps/issuetemplate/appinfo/info.xml
-        nextcloud_occ_no_check app:enable issuetemplate
-    ;;&
-    *"PDFViewer"*)
-        install_and_enable_app files_pdfviewer
-    ;;&
-    *"Extract"*)
-        if install_and_enable_app extract
-        then
-            install_if_not unrar
-            install_if_not p7zip
-            install_if_not p7zip-full
-        fi
-    ;;&
-    *"Text"*)
-        install_and_enable_app text
-    ;;&
-    *"Mail"*)
-        install_and_enable_app mail
-    ;;&
-    *"Deck"*)
-        install_and_enable_app deck
-    ;;&
-    *"Collectives"*)
-        install_and_enable_app collectives
-    ;;&
-    *"Suspicios Login detetion"*)
-        install_and_enable_app suspicios_login
-    ;;&
-    *"Group-Folders"*)
-        install_and_enable_app groupfolders
-    ;;&
-    *)
-    ;;
-esac
+# case "$choice" in
+#     *"Calendar"*)
+#         install_and_enable_app calendar
+#     ;;&
+#     *"Contacts"*)
+#         install_and_enable_app contacts
+#     ;;&
+#     *"IssueTemplate"*)
+#         # install_and_enable_app issuetemplate
+#         rm -rf "$NCPATH"apps/issuetemplate
+#         nextcloud_occ app:install --force --keep-disabled issuetemplate
+#         sed -i "s|20|${CURRENTVERSION%%.*}|g" "$NCPATH"/apps/issuetemplate/appinfo/info.xml
+#         nextcloud_occ_no_check app:enable issuetemplate
+#     ;;&
+#     *"PDFViewer"*)
+#         install_and_enable_app files_pdfviewer
+#     ;;&
+#     *"Extract"*)
+#         if install_and_enable_app extract
+#         then
+#             install_if_not unrar
+#             install_if_not p7zip
+#             install_if_not p7zip-full
+#         fi
+#     ;;&
+#     *"Text"*)
+#         install_and_enable_app text
+#     ;;&
+#     *"Mail"*)
+#         install_and_enable_app mail
+#     ;;&
+#     *"Deck"*)
+#         install_and_enable_app deck
+#     ;;&
+#     *"Collectives"*)
+#         install_and_enable_app collectives
+#     ;;&
+#     *"Suspicios Login detetion"*)
+#         install_and_enable_app suspicios_login
+#     ;;&
+#     *"Group-Folders"*)
+#         install_and_enable_app groupfolders
+#     ;;&
+#     *)
+#     ;;
+# esac
 
 # Cleanup
 apt-get autoremove -y
@@ -1022,8 +1022,8 @@ then
     sed -i "s|GRUB_CMDLINE_LINUX_DEFAULT=.*|GRUB_CMDLINE_LINUX_DEFAULT=|g" /etc/default/grub
 fi
 
-# Set secure permissions final (./data/.htaccess has wrong permissions otherwise)
-bash "$SECURE" & spinner_loading
+# # Set secure permissions final (./data/.htaccess has wrong permissions otherwise)
+# bash "$SECURE" & spinner_loading
 
 # Put IP address in /etc/issue (shown before the login)
 if [ -f /etc/issue ]

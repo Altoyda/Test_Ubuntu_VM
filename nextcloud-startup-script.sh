@@ -120,7 +120,7 @@ Please note: It's not recommended to run a server on Wi-Fi; using an ethernet ca
 Please contact us for support:
 https://shop.hanssonit.se/product/premium-support-per-30-minutes/
 
-Please also post this issue on: https://github.com/nextcloud/vm/issues"
+Please also post this issue on: https://github.com/Altoyda/Test_Ubuntu_VM/issues"
         exit 1
         fi
 else
@@ -129,7 +129,7 @@ else
 Please contact us for support:
 https://shop.hanssonit.se/product/premium-support-per-30-minutes/
 
-Please also post this issue on: https://github.com/nextcloud/vm/issues"
+Please also post this issue on: https://github.com/Altoyda/Test_Ubuntu_VM/issues"
     exit 1
 fi
 
@@ -599,7 +599,7 @@ Please ask for help in the forums, visit our shop to buy support:
 - FORUM: https://help.nextcloud.com/
 
 BUGS:
-Please report any bugs here: https://github.com/nextcloud/vm/issues"
+Please report any bugs here: https://github.com/Altoyda/Test_Ubuntu_VM/issues"
 
 msg_box "### PLEASE HIT OK TO REBOOT ###
 
