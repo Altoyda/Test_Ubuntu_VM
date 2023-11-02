@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 true
 SCRIPT_NAME="Nextcloud Configuration Menu"
 # shellcheck source=lib.sh

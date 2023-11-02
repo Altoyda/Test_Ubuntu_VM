@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 true
 SCRIPT_NAME="Server Configuration Menu"
 # shellcheck source=lib.sh

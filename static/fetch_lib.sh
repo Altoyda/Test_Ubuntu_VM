@@ -1,4 +1,5 @@
 #!/bin/bash
+
 true
 # see https://github.com/koalaman/shellcheck/wiki/Directive
 

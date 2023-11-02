@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 true
 SCRIPT_NAME="Startup Configuration Menu"
 # shellcheck source=lib.sh
@@ -103,7 +102,7 @@ the server will be rebooted. After the reboot, please login as usual and run thi
                     sed -i "s|;date.timezone.*|date.timezone = $(cat /etc/timezone)|g" "$PHP_INI"
 
                     # Change timezone for logging
-                    nextcloud_occ config:system:set logtimezone --value="$(cat /etc/timezone)"
+                    # nextcloud_occ config:system:set logtimezone --value="$(cat /etc/timezone)"
                     msg_box "The timezone was changed successfully." "$SUBTITLE"
                 fi
             fi

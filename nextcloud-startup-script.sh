@@ -39,9 +39,6 @@ SCRIPT_NAME="Nextcloud Startup Script"
 # shellcheck source=lib.sh
 source /var/scripts/fetch_lib.sh
 
-# Get all needed variables from the library
-ncdb
-
 # Check if root
 root_check
 
@@ -118,7 +115,7 @@ Please note: It's not recommended to run a server on Wi-Fi; using an ethernet ca
         msg_box "Network is NOT OK. You must have a working network connection to run this script.
 
 Please contact us for support:
-https://shop.hanssonit.se/product/premium-support-per-30-minutes/
+https://github.com/Altoyda/Test_Ubuntu_VM/issues/
 
 Please also post this issue on: https://github.com/Altoyda/Test_Ubuntu_VM/issues"
         exit 1
@@ -127,18 +124,9 @@ else
     msg_box "Network is NOT OK. You must have a working network connection to run this script.
 
 Please contact us for support:
-https://shop.hanssonit.se/product/premium-support-per-30-minutes/
+https://github.com/Altoyda/Test_Ubuntu_VM/issues/
 
 Please also post this issue on: https://github.com/Altoyda/Test_Ubuntu_VM/issues"
-    exit 1
-fi
-
-# Check that this run on the PostgreSQL VM
-if ! is_this_installed postgresql-common
-then
-    print_text_in_color "$IRed" "This script is intended to be \
-run using a PostgreSQL database, but PostgreSQL is not installed."
-    print_text_in_color "$IRed" "Aborting..."
     exit 1
 fi
 
@@ -150,18 +138,11 @@ SCRIPT_NAME="Nextcloud Startup Script"
 # shellcheck source=lib.sh
 source /var/scripts/fetch_lib.sh
 
-# Get all needed variables from the library
-ncdb
-nc_update
-
 # Check for errors + debug code and abort if something isn't right
 # 1 = ON
 # 0 = OFF
 DEBUG=0
 debug_mode
-
-# Nextcloud 21 is required
-lowest_compatible_nc 21
 
 # Add temporary fix if needed
 if network_ok
@@ -171,14 +152,6 @@ fi
 
 # Import if missing and export again to import it with UUID
 zpool_import_if_missing
-
-# Set phone region (needs the latest KEYBOARD_LAYOUT from lib)
-# shellcheck source=lib.sh
-source /var/scripts/fetch_lib.sh
-if [ -n "$KEYBOARD_LAYOUT" ]
-then
-    nextcloud_occ config:system:set default_phone_region --value="$KEYBOARD_LAYOUT"
-fi
 
 # Is this run as a pure root user?
 if is_root
@@ -225,44 +198,14 @@ is designed to be run once, not several times in a row.
 If you feel uncertain about adding some extra features during this setup, \
 then it's best to wait until after the first setup is done. You can always add all the extra features later.
 
-[For the Nextcloud VM:]
+[For the Ubuntu VM:]
 Please delete this VM from your host and reimport it once again, then run this setup like you did the first time.
 
-[For the Nextcloud Home/SME Server:]
-It's a bit trickier since you can't revert in the same way as a VM. \
-The best thing you can do now is to save all the output from the session you \
-ran before this one + write down all the steps you took and send and email to:
-github@hanssonit.se with the subject 'Issues with first setup', and we'll take it from there.
-
-Full documentation can be found here: https://docs.hanssonit.se
 Please report any bugs you find here: $ISSUES"
     exit 1
 fi
 
 touch "$SCRIPTS/you-can-not-run-the-startup-script-several-times"
-
-if home_sme_server
-then
-    download_script STATIC nhss_index
-    mv $SCRIPTS/nhss_index.php $HTML/index.php && rm -f $HTML/html/index.html
-    chmod 750 $HTML/index.php && chown www-data:www-data $HTML/index.php
-else
-    download_script STATIC index
-    mv $SCRIPTS/index.php $HTML/index.php && rm -f $HTML/html/index.html
-    chmod 750 $HTML/index.php && chown www-data:www-data $HTML/index.php
-fi
-
-# Change 000-default to $WEB_ROOT
-sed -i "s|DocumentRoot /var/www/html|DocumentRoot $HTML|g" /etc/apache2/sites-available/000-default.conf
-
-# Make possible to see the welcome screen (without this php-fpm won't reach it)
- sed -i '14i\    # http://lost.l-w.ca/0x05/apache-mod_proxy_fcgi-and-php-fpm/' /etc/apache2/sites-available/000-default.conf
- sed -i '15i\   <FilesMatch "\.php$">' /etc/apache2/sites-available/000-default.conf
- sed -i '16i\    <If "-f %{SCRIPT_FILENAME}">' /etc/apache2/sites-available/000-default.conf
- sed -i '17i\      SetHandler "proxy:unix:/run/php/php'$PHPVER'-fpm.nextcloud.sock|fcgi://localhost"' /etc/apache2/sites-available/000-default.conf
- sed -i '18i\   </If>' /etc/apache2/sites-available/000-default.conf
- sed -i '19i\   </FilesMatch>' /etc/apache2/sites-available/000-default.conf
- sed -i '20i\    ' /etc/apache2/sites-available/000-default.conf
 
 # Allow $UNIXUSER to run figlet script
 chown "$UNIXUSER":"$UNIXUSER" "$SCRIPTS/nextcloud.sh"
@@ -271,18 +214,12 @@ msg_box "This script will configure your Nextcloud and activate TLS.
 It will also do the following:
 
 - Generate new SSH keys for the server
-- Generate new PostgreSQL password
 - Install selected apps and automatically configure them
 - Detect and set hostname
-- Detect and set trusted domains
-- Upgrade your system and Nextcloud to latest version
-- Set secure permissions to Nextcloud
-- Set new passwords to Linux and Nextcloud
+- Upgrade your system to latest version
+- Set new passwords to Linux
 - Change timezone
-- Set correct Rewriterules for Nextcloud
-- Copy content from .htaccess to .user.ini (because we use php-fpm)
 - Add additional options if you choose them
-- Set correct CPU cores for Imaginary
 - And more..."
 
 msg_box "PLEASE NOTE:
@@ -292,14 +229,7 @@ msg_box "PLEASE NOTE:
 
 [#] When complete it will delete all the *.sh, *.html, *.tar, *.zip inside:
     /root
-    /home/$UNIXUSER
-
-[#] Please consider donating if you like the product:
-    https://shop.hanssonit.se/product-category/donate/
-
-[#] You can also ask for help here:
-    https://help.nextcloud.com/c/support/appliances-docker-snappy-vm
-    https://shop.hanssonit.se/product/premium-support-per-30-minutes/"
+    /home/$UNIXUSER"
 
 msg_box "PLEASE NOTE:
 
@@ -310,29 +240,10 @@ When the setup is done, the server will automatically reboot.
 
 Please report any issues to: $ISSUES"
 
-# Change timezone in PHP
-sed -i "s|;date.timezone.*|date.timezone = $(cat /etc/timezone)|g" "$PHP_INI"
-
-# Change timezone for logging
-nextcloud_occ config:system:set logtimezone --value="$(cat /etc/timezone)"
-
-# Pretty URLs
-print_text_in_color "$ICyan" "Setting RewriteBase to \"/\" in config.php..."
-chown -R www-data:www-data $NCPATH
-nextcloud_occ config:system:set overwrite.cli.url --value="http://localhost/"
-nextcloud_occ config:system:set htaccess.RewriteBase --value="/"
-nextcloud_occ maintenance:update:htaccess
-bash $SECURE & spinner_loading
-
 # Generate new SSH Keys
 printf "\nGenerating new SSH keys for the server...\n"
 rm -v /etc/ssh/ssh_host_*
 dpkg-reconfigure openssh-server
-
-# Generate new PostgreSQL password
-print_text_in_color "$ICyan" "Generating new PostgreSQL password..."
-check_command bash "$SCRIPTS/change_db_pass.sh"
-sleep 3
 
 # Server configurations
 bash $SCRIPTS/server_configuration.sh
@@ -370,126 +281,6 @@ This is used when you login to the Ubuntu CLI."
 fi
 unset UNIX_PASSWORD
 
-# NEXTCLOUD USER
-NCADMIN=$(nextcloud_occ user:list | awk '{print $3}')
-if [[ "$NCADMIN" != "ncadmin" ]]
-then
-   print_text_in_color "$ICyan" "No need to change password for GUI user '$NCADMIN' since it's not the default user."
-else
-    msg_box "We will now change the username and password for the Web Admin in Nextcloud."
-    while :
-    do
-        NEWUSER=$(input_box_flow "Please type in the name of the Web Admin in Nextcloud.
-It must differ from the current one: $NCADMIN.\n\nThe only allowed characters for the username are:
-'a-z', 'A-Z', '0-9', and '_.@-'")
-        if [[ "$NEWUSER" == *" "* ]]
-        then
-            msg_box "Please don't use spaces."
-        elif [ "$NEWUSER" = "$NCADMIN" ]
-        then
-            msg_box "This username ($NCADMIN) is already in use. Please choose a different one."
-        # - has to be escaped otherwise it won't work.
-        # Inspired by: https://unix.stackexchange.com/a/498731/433213
-        elif [ "${NEWUSER//[A-Za-z0-9_.\-@]}" ]
-        then
-            msg_box "Allowed characters for the username are:\na-z', 'A-Z', '0-9', and '_.@-'\n\nPlease try again."
-        else
-            break
-        fi
-    done
-    while :
-    do
-        OC_PASS=$(input_box_flow "Please type in the new password for the new Web Admin ($NEWUSER) in Nextcloud.")
-        # Create new user
-        export OC_PASS
-        if su -s /bin/sh www-data -c "php $NCPATH/occ user:add $NEWUSER --password-from-env -g admin"
-        then
-            msg_box "The new Web Admin in Nextcloud is now: $NEWUSER\nThe password is set to: $OC_PASS
-This is used when you login to Nextcloud itself, i.e. on the web."
-            unset OC_PASS
-            break
-        else
-            any_key "Press any key to choose a different password."
-        fi
-    done
-    # Delete old user
-    if [[ "$NCADMIN" ]]
-    then
-        print_text_in_color "$ICyan" "Deleting $NCADMIN..."
-        nextcloud_occ user:delete "$NCADMIN"
-        sleep 2
-    fi
-fi
-
-# We need to unset the cached admin-user since we have changed its name
-unset NC_ADMIN_USER
-
-msg_box "Well done, you have now finished most of the setup.
-
-There are still a few steps left but they are automated so sit back and relax! :)"
-
-# Add default notifications
-notify_admin_gui \
-"Do you need support?" \
-"If you need support, please visit the shop: https://shop.hanssonit.se, or the forum: https://help.nextcloud.com."
-
-if ! is_this_installed php"$PHPVER"-imagick
-then
-    notify_admin_gui \
-    "Regarding Imagick not being installed" \
-    "As you may have noticed, Imagick is not installed. We care about your security, \
-and here's the reason: https://github.com/nextcloud/server/issues/13099"
-fi
-
-# Fixes https://github.com/nextcloud/vm/issues/58
-a2dismod status
-restart_webserver
-
-if home_sme_server
-then
-    install_if_not bc
-    mem_available="$(awk '/MemTotal/{print $2}' /proc/meminfo)"
-    mem_available_gb="$(echo "scale=0; $mem_available/(1024*1024)" | bc)"
-    # 32 GB RAM
-    if [[ 30 -lt "${mem_available_gb}" ]]
-    then
-        # Add specific values to PHP-FPM based on 32 GB RAM
-        check_command sed -i "s|pm.max_children.*|pm.max_children = 600|g" "$PHP_POOL_DIR"/nextcloud.conf
-        check_command sed -i "s|pm.start_servers.*|pm.start_servers = 100|g" "$PHP_POOL_DIR"/nextcloud.conf
-        check_command sed -i "s|pm.min_spare_servers.*|pm.min_spare_servers = 20|g" "$PHP_POOL_DIR"/nextcloud.conf
-        check_command sed -i "s|pm.max_spare_servers.*|pm.max_spare_servers = 480|g" "$PHP_POOL_DIR"/nextcloud.conf
-        restart_webserver
-    # 16 GB RAM
-    elif [[ 14 -lt "${mem_available_gb}" ]]
-    then
-        # Add specific values to PHP-FPM based on 16 GB RAM
-        check_command sed -i "s|pm.max_children.*|pm.max_children = 300|g" "$PHP_POOL_DIR"/nextcloud.conf
-        check_command sed -i "s|pm.start_servers.*|pm.start_servers = 50|g" "$PHP_POOL_DIR"/nextcloud.conf
-        check_command sed -i "s|pm.min_spare_servers.*|pm.min_spare_servers = 20|g" "$PHP_POOL_DIR"/nextcloud.conf
-        check_command sed -i "s|pm.max_spare_servers.*|pm.max_spare_servers = 280|g" "$PHP_POOL_DIR"/nextcloud.conf
-        restart_webserver
-    fi
-else
-    # Calculate the values of PHP-FPM based on the amount of RAM available (minimum 2 GB or 8 children)
-    calculate_php_fpm
-
-    # Run again if values are reset on last run
-    calculate_php_fpm
-fi
-
-# Set correct amount of CPUs for Imaginary
-if does_this_docker_exist nextcloud/aio-imaginary
-then
-    if which nproc >/dev/null 2>&1
-    then
-        nextcloud_occ config:system:set preview_concurrency_new --value="$(nproc)"
-        nextcloud_occ config:system:set preview_concurrency_all --value="$(($(nproc)*2))"
-    else
-        nextcloud_occ config:system:set preview_concurrency_new --value="2"
-        nextcloud_occ config:system:set preview_concurrency_all --value="4"
-    fi
-fi
-
 # Add temporary fix if needed
 if network_ok
 then
@@ -497,19 +288,14 @@ then
 fi
 
 # Cleanup 1
-nextcloud_occ maintenance:repair
 rm -f "$SCRIPTS/ip.sh"
-rm -f "$SCRIPTS/change_db_pass.sh"
 rm -f "$SCRIPTS/instruction.sh"
-rm -f "$NCDATA/nextcloud.log"
 rm -f "$SCRIPTS/static_ip.sh"
 rm -f "$SCRIPTS/lib.sh"
 rm -f "$SCRIPTS/server_configuration.sh"
 rm -f "$SCRIPTS/nextcloud_configuration.sh"
 rm -f "$SCRIPTS/additional_apps.sh"
 rm -f "$SCRIPTS/adduser.sh"
-rm -f "$SCRIPTS/activate-tls.sh"
-rm -f "$SCRIPTS/desec_menu.sh"
 rm -f "$NCDATA"/*.log
 
 find /root "/home/$UNIXUSER" -type f \( -name '*.sh*' -o -name '*.html*' -o -name '*.tar*' -o -name 'results' -o -name '*.zip*' \) -delete
@@ -520,10 +306,7 @@ truncate -s 0 \
     /root/.bash_history \
     "/home/$UNIXUSER/.bash_history" \
     /var/spool/mail/root \
-    "/var/spool/mail/$UNIXUSER" \
-    /var/log/apache2/access.log \
-    /var/log/apache2/error.log \
-    "$VMLOGS/nextcloud.log"
+    "/var/spool/mail/$UNIXUSER"
 
 sed -i "s|sudo -i||g" "$UNIXUSER_PROFILE"
 
@@ -552,21 +335,6 @@ mesg n
 
 ROOTNEWPROFILE
 
-# Set trusted domains
-run_script STATIC trusted_domains
-
-# Upgrade system
-print_text_in_color "$ICyan" "System will now upgrade..."
-bash $SCRIPTS/update.sh minor
-
-# Check if new major is out, and inform on how to update
-nc_update
-if version_gt "$NCMAJOR" "$CURRENTMAJOR"
-then
-    msg_box "We noticed that there's a new major release of Nextcloud ($NCVERSION).\nIf you want to update to the latest release instantly, please check this:\n
-https://docs.hanssonit.se/s/W6fMouPiqQz3_Mog/virtual-machines-vm/d/W7Du9uPiqQz3_Mr1/nextcloud-vm-machine-configuration?currentPageId=W7D3quPiqQz3_MsE"
-fi
-
 # Cleanup 2
 apt-get autoremove -y
 apt-get autoclean
@@ -580,35 +348,9 @@ msg_box "The installation process is *almost* done.
 
 Please hit OK in all the following prompts and let the server reboot to complete the installation process."
 
-# Enterprise?
-msg_box "ENTERPRISE?
-Nextcloud Enterprise gives professional organizations software optimized and tested for mission critical environments.
-
-More info here: https://nextcloud.com/enterprise/
-Get your license here: https://shop.hanssonit.se/product/nextcloud-enterprise-license-100-users/"
-
-msg_box "TIPS & TRICKS:
-1. Publish your server online: http://shortio.hanssonit.se/ffOQOXS6Kh
-2. To login to PostgreSQL just type: sudo -u postgres psql nextcloud_db
-3. To update this server just type: sudo bash /var/scripts/update.sh
-4. Install apps, configure Nextcloud, and server: sudo bash $SCRIPTS/menu.sh"
-
-msg_box "SUPPORT:
-Please ask for help in the forums, visit our shop to buy support:
-- SUPPORT: https://shop.hanssonit.se/product/premium-support-per-30-minutes/
-- FORUM: https://help.nextcloud.com/
-
-BUGS:
-Please report any bugs here: https://github.com/Altoyda/Test_Ubuntu_VM/issues"
-
 msg_box "### PLEASE HIT OK TO REBOOT ###
 
-Congratulations! You have successfully installed Nextcloud!
-
-LOGIN:
-Login to Nextcloud in your browser:
-- IP: $ADDRESS
-- Hostname: $(hostname -f)
+Congratulations! You have successfully installed Ubuntu!
 
 ### PLEASE HIT OK TO REBOOT ###"
 

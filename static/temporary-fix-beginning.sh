@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 true
 SCRIPT_NAME="Temporary Fix"
 # shellcheck source=lib.sh

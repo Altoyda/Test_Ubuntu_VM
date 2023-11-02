@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 true
 SCRIPT_NAME="Change ncadmin Profile"
 # shellcheck source=lib.sh

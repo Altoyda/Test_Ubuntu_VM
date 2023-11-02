@@ -8,16 +8,16 @@ Color_Off='\e[0m'       # Text Reset
 clear
 cat << INST1
 +-----------------------------------------------------------------------+
-|      Welcome to the first setup of your own Nextcloud Server! :)      |
+|      Welcome to the first setup of your own Ubuntu Server! :)         |
 |                                                                       |
 INST1
 echo -e "|"  "${IGreen}To run the startup script type the sudoer password, then hit [ENTER].${Color_Off} |"
 echo -e "|"  "${IGreen}The default sudoer password is: ${BIGreen}nextcloud${IGreen}${Color_Off}                             |"
 cat << INST2
 |                                                                       |
-| You can find the complete install instructions here:                  |
-| Nextcloud VM              = http://shortio.hanssonit.se/6xxdsHvhwe    |
-| Nextcloud Home/SME Server = http://shortio.hanssonit.se/LnrY5GMQYy    |
+|                                                                       |
+|                                                                       |
+|                                                                       |
 |                                                                       |
 | Optional:                                                             |
 | If you are running Windows 10 (1809) or later, you can simply use SSH |

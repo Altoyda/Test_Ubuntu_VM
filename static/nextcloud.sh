@@ -6,7 +6,7 @@ WANIP4=$(curl -s -k -m 5 -4 https://api64.ipify.org)
 ADDRESS=$(hostname -I | cut -d ' ' -f 1)
 
 clear
-figlet -f small Nextcloud
+figlet -f small Felinescloud
 echo "https://www.hanssonit.se/nextcloud-vm"
 echo
 echo
