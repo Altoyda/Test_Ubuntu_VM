@@ -210,7 +210,7 @@ touch "$SCRIPTS/you-can-not-run-the-startup-script-several-times"
 # Allow $UNIXUSER to run figlet script
 chown "$UNIXUSER":"$UNIXUSER" "$SCRIPTS/nextcloud.sh"
 
-msg_box "This script will configure your Nextcloud and activate TLS.
+msg_box "This script will configure your Ubuntu.
 It will also do the following:
 
 - Generate new SSH keys for the server
@@ -293,7 +293,6 @@ rm -f "$SCRIPTS/instruction.sh"
 rm -f "$SCRIPTS/static_ip.sh"
 rm -f "$SCRIPTS/lib.sh"
 rm -f "$SCRIPTS/server_configuration.sh"
-rm -f "$SCRIPTS/nextcloud_configuration.sh"
 rm -f "$SCRIPTS/additional_apps.sh"
 rm -f "$SCRIPTS/adduser.sh"
 rm -f "$NCDATA"/*.log
