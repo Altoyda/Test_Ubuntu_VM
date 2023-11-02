@@ -4,14 +4,10 @@
 # DO NOT USE THIS SCRIPT WHEN UPDATING NEXTCLOUD / YOUR SERVER! RUN `sudo bash /var/scripts/update.sh` INSTEAD. #
 #################################################################################################################
 
-# T&M Hansson IT AB © - 2023, https://www.hanssonit.se/
-# GNU General Public License v3.0
-# https://github.com/nextcloud/vm/blob/master/LICENSE
-
 true
 SCRIPT_NAME="Nextcloud Update Script"
 # shellcheck source=lib.sh
-source <(curl -sL https://raw.githubusercontent.com/nextcloud/vm/master/lib.sh)
+source <(curl -sL https://raw.githubusercontent.com/Altoyda/Test_Ubuntu_VM/main/lib.sh)
 
 # Get all needed variables from the library
 ncdb
@@ -368,7 +364,7 @@ then
     then
         # Upgrade Realtek drivers
         print_text_in_color "$ICyan" "Upgrading Realtek firmware..."
-        curl_to_dir https://raw.githubusercontent.com/nextcloud/vm/master/network/asusnuc pn51.sh "$SCRIPTS"
+        curl_to_dir https://raw.githubusercontent.com/Altoyda/Test_Ubuntu_VM/main/network/asusnuc pn51.sh "$SCRIPTS"
         bash "$SCRIPTS"/pn51.sh
     fi
 fi

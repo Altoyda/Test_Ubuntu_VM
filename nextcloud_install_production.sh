@@ -1,9 +1,5 @@
 #!/bin/bash
 
-# T&M Hansson IT AB © - 2023, https://www.hanssonit.se/
-# GNU General Public License v3.0
-# https://github.com/nextcloud/vm/blob/master/LICENSE
-
 # Prefer IPv4 for apt
 echo 'Acquire::ForceIPv4 "true";' >> /etc/apt/apt.conf.d/99force-ipv4
 
@@ -29,11 +25,11 @@ else
 fi
 
 true
-SCRIPT_NAME="Nextcloud Install Script"
-SCRIPT_EXPLAINER="This script is installing all requirements that are needed for Nextcloud to run.
-It's the first of two parts that are necessary to finish your customized Nextcloud installation."
+SCRIPT_NAME="Ubuntu 22.04 LTS (server)"
+SCRIPT_EXPLAINER="This script is installing all requirements that are needed for Ubuntu to run.
+It's the first of two parts that are necessary to finish your customized Ubuntu installation."
 # shellcheck source=lib.sh
-source <(curl -sL https://raw.githubusercontent.com/nextcloud/vm/master/lib.sh)
+source <(curl -sL https://raw.githubusercontent.com/Altoyda/Test_Ubuntu_VM/main/lib.sh)
 
 # Check for errors + debug code and abort if something isn't right
 # 1 = ON
@@ -1042,7 +1038,7 @@ then
     then
         # Upgrade Realtek drivers
         print_text_in_color "$ICyan" "Upgrading Realtek firmware..."
-        curl_to_dir https://raw.githubusercontent.com/nextcloud/vm/master/network/asusnuc pn51.sh "$SCRIPTS"
+        curl_to_dir https://raw.githubusercontent.com/Altoyda/Test_Ubuntu_VM/main/network/asusnuc pn51.sh "$SCRIPTS"
         bash "$SCRIPTS"/pn51.sh
     fi
 fi

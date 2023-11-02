@@ -1,14 +1,12 @@
 #!/bin/bash
 
-# T&M Hansson IT AB © - 2023, https://www.hanssonit.se/
-# Copyright © 2021 Simon Lindner (https://github.com/szaimen)
 
 true
 SCRIPT_NAME="TPM2 Unlock"
 SCRIPT_EXPLAINER="This script helps automatically unlocking the root partition during boot \
 and securing your GRUB (bootloader)."
 # shellcheck source=lib.sh
-source /var/scripts/fetch_lib.sh || source <(curl -sL https://raw.githubusercontent.com/nextcloud/vm/master/lib.sh)
+source /var/scripts/fetch_lib.sh || source <(curl -sL https://raw.githubusercontent.com/Altoyda/Test_Ubuntu_VM/main/lib.sh)
 
 # Check for errors + debug code and abort if something isn't right
 # 1 = ON

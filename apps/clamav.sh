@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# T&M Hansson IT AB © - 2023, https://www.hanssonit.se/
 
 true
 SCRIPT_NAME="ClamAV"
@@ -198,7 +197,6 @@ esac
 cat << CLAMAV_REPORT > "$SCRIPTS"/clamav-fullscan.sh
 #!/bin/bash
 
-# T&M Hansson IT AB © - 2023, https://www.hanssonit.se/
 
 source /var/scripts/fetch_lib.sh
 

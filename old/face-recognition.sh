@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# T&M Hansson IT AB © - 2023, https://www.hanssonit.se/
-# Copyright © 2021 Simon Lindner (https://github.com/szaimen)
-
 true
 SCRIPT_NAME="Face Recognition"
 SCRIPT_EXPLAINER="The $SCRIPT_NAME app allows to automatically scan for faces inside your Nextcloud."

@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# T&M Hansson IT AB © - 2023, https://www.hanssonit.se/
 
 true
 SCRIPT_NAME="Recognize for Nextcloud"
@@ -58,7 +57,7 @@ then
 4. Install
 
 We will run the uninstaller for you now, then exit."
-    wget https://raw.githubusercontent.com/nextcloud/vm/master/old/face-recognition.sh && bash face-recognition.sh && rm -f face-recognition.sh
+    wget https://raw.githubusercontent.com/Altoyda/Test_Ubuntu_VM/main/old/face-recognition.sh && bash face-recognition.sh && rm -f face-recognition.sh
     exit
 fi
 

@@ -7,7 +7,6 @@ source /var/scripts/fetch_lib.sh
 # Get all needed variables from the library
 ncdb
 
-# T&M Hansson IT AB © - 2023, https://www.hanssonit.se/
 
 # Check for errors + debug code and abort if something isn't right
 # 1 = ON

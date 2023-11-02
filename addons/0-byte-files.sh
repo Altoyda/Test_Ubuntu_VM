@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# T&M Hansson IT AB © - 2023, https://www.hanssonit.se/
 true
 SCRIPT_NAME="Check for 0-Byte files"
 # shellcheck source=lib.sh

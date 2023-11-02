@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# T&M Hansson IT AB © - 2023, https://www.hanssonit.se/
 
 # Implements this way of doing it: https://askubuntu.com/a/1281319
 

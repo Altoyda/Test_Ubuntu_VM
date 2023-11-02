@@ -1,9 +1,5 @@
 #!/bin/bash
 
-# T&M Hansson IT AB © - 2023, https://www.hanssonit.se/
-# GNU General Public License v3.0
-# https://github.com/nextcloud/vm/blob/master/LICENSE
-
 # shellcheck disable=SC2034
 true
 # see https://github.com/koalaman/shellcheck/wiki/Directive

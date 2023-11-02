@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# T&M Hansson IT AB © - 2023, https://www.hanssonit.se/
 
 BIGreen='\e[1;92m'      # Green
 IGreen='\e[0;92m'       # Green
