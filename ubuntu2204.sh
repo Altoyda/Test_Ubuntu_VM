@@ -122,7 +122,7 @@ UNIV=$(apt-cache policy | grep http | awk '{print $3}' | grep universe | head -n
 if [ "$UNIV" != "universe" ]
 then
     print_text_in_color "$ICyan" "Adding required repo (universe)."
-    add-apt-repository universe
+    yes | add-apt-repository universe
 fi
 }
 
